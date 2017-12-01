@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EightBall</string>
+    <string name="question">Ask Me A Question</string>
 </resources>

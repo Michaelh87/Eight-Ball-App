@@ -9,6 +9,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class EightBall extends AppCompatActivity implements SensorEventListener {
 
@@ -16,11 +20,17 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private Sensor senAccelerometer;
     private int count = 0;
     private boolean flipped = false;
+    private ArrayList<String> messages = new ArrayList<>();
+    private TextView message;
+    private Random rand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eight_ball);
+        message = (TextView) findViewById(R.id.message);
+        rand = new Random();
+        setMessages();
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -77,6 +87,31 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             super.onPostExecute(aVoid);
             String post = "PostExe";
             Log.v(post, "After doInBackground");
+
+            message.setText(messages.get(rand.nextInt(messages.size())));
         }
+    }
+
+    private void setMessages(){
+        messages.add("It is certain");
+        messages.add("It is decidedly so");
+        messages.add("Without a doubt");
+        messages.add("Yes definitely");
+        messages.add("You may rely on it");
+        messages.add("As I see it, yes");
+        messages.add("Most likely");
+        messages.add("Outlook good");
+        messages.add("Yes");
+        messages.add("Signs point to yes");
+        messages.add("Reply hazy try again");
+        messages.add("Ask again later");
+        messages.add("Better not tell you now");
+        messages.add("Cannot predict now");
+        messages.add("Concentrate and ask again");
+        messages.add("Don't count on it");
+        messages.add("My reply is no");
+        messages.add("My sources say no");
+        messages.add("Outlook not so good");
+        messages.add("Very doubtful");
     }
 }

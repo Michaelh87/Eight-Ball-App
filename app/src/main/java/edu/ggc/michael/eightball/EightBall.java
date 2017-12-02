@@ -1,8 +1,11 @@
 package edu.ggc.michael.eightball;
 
 import android.content.Context;
+import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
+import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.hardware.SensorEventListener;
@@ -10,7 +13,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -23,6 +25,8 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private ArrayList<String> messages = new ArrayList<>();
     private TextView message;
     private Random rand;
+    private Vibrator v;
+    private Camera camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         setContentView(R.layout.activity_eight_ball);
         message = (TextView) findViewById(R.id.message);
         rand = new Random();
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setMessages();
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -50,6 +55,11 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         count++;
 
         if(event.values[2] < -2.5){
+            if(v.hasVibrator() && !flipped ) {
+                v.vibrate(100);
+            } else {
+
+            }
             flipped = true;
         }
 
@@ -114,4 +124,11 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         messages.add("Outlook not so good");
         messages.add("Very doubtful");
     }
+
+    private void speak(String sp){
+        //see pixabay
+        //tts.speak(tag, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+
 }

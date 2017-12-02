@@ -14,6 +14,7 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 public class EightBall extends AppCompatActivity implements SensorEventListener {
@@ -26,7 +27,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private TextView message;
     private Random rand;
     private Vibrator v;
-    private Camera camera;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         message = (TextView) findViewById(R.id.message);
         rand = new Random();
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        setTTS();
         setMessages();
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -98,7 +100,10 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             String post = "PostExe";
             Log.v(post, "After doInBackground");
 
-            message.setText(messages.get(rand.nextInt(messages.size())));
+            int random = rand.nextInt(messages.size());
+
+            message.setText(messages.get(random));
+            speak(messages.get(random));
         }
     }
 
@@ -125,9 +130,18 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         messages.add("Very doubtful");
     }
 
+    private void setTTS(){
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                tts.setLanguage(Locale.US);
+            }
+        });
+    }
+
     private void speak(String sp){
         //see pixabay
-        //tts.speak(tag, TextToSpeech.QUEUE_FLUSH, null);
+        tts.speak(sp, TextToSpeech.QUEUE_FLUSH, null);
     }
 
 

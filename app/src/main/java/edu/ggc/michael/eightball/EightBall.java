@@ -59,6 +59,20 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     }
 
     @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        Log.v("Orientation", ""+  message.getText());
+        outState.putString("messageText", (String) message.getText());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v("Orientation", ""+ savedInstanceState.getString("messageText"));
+        message.setText(savedInstanceState.getString("messageText"));
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
         String sc = "Sensor changed";
 

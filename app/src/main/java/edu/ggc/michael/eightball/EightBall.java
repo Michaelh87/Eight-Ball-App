@@ -102,7 +102,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         }
         count++;
 
-        if(event.values[2] < -2.5){
+        if(event.values[2] < -5){
             if(v.hasVibrator() && !flipped ) {
                 v.vibrate(100);
             } else {
@@ -146,7 +146,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
     protected void onResume() {
 
-        super.onResume();
+
         if(music != null && !music.isPlaying()) {
             music.seekTo(length);
             music.start();
@@ -154,7 +154,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.v("tag","music should start here.");
 
-
+        super.onResume();
     }
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 

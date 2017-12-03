@@ -51,10 +51,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
         musicAsync = new MusicAsync();
         musicAsync.doInBackground();
-//        svc = new Intent(this, BackgroundMusic.class);
-//
-//        startService(svc);
-
 
         setMessages();
 

@@ -2,7 +2,7 @@
     <string name="app_name">EightBall</string>
     <string name="question">Ask Me A Question</string>
     <string name="myclass">ITEC4550</string>
-    <string name="name">Michael Holtmann</string>
+    <string name="name">Michael Holtmann\nSasa Mitrovic</string>
     <string name="date">12/5/17</string>
 
 </resources>

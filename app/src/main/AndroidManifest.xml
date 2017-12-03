@@ -3,16 +3,26 @@
     package="edu.ggc.michael.eightball">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/eightball"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/eightball_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".BackgroundMusic"
+            android:enabled="true"
+            android:stopWithTask="true"
+            />
+
+
         <activity android:name=".EightBall">
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,9 +1,11 @@
 package edu.ggc.michael.eightball;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Camera;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
@@ -16,7 +18,10 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -31,6 +36,9 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private Random rand;
     private Vibrator v;
     private TextToSpeech tts;
+    private Intent svc;
+    public static MediaPlayer music;
+    private MusicAsync musicAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,13 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         rand = new Random();
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setTTS();
+
+        musicAsync = new MusicAsync();
+        musicAsync.doInBackground();
+//        svc = new Intent(this, BackgroundMusic.class);
+//
+//        startService(svc);
+
 
         setMessages();
 
@@ -58,18 +73,23 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         });
     }
 
+
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         Log.v("Orientation", ""+  message.getText());
+        outState.putInt("position", music.getCurrentPosition());
         outState.putString("messageText", (String) message.getText());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        int pos = savedInstanceState.getInt("position");
         Log.v("Orientation", ""+ savedInstanceState.getString("messageText"));
+        music.seekTo(pos);
         message.setText(savedInstanceState.getString("messageText"));
+        super.onRestoreInstanceState(savedInstanceState);
+
     }
 
     @Override
@@ -104,8 +124,25 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
+    // This whole method basically checks whether the app was paused and pauses the music so it
+    // doesnt keep playing the music even when the app closes.
     protected void onPause() {
+
+        if (this.isFinishing()){
+            music.stop();
+        }
+        Context context = getApplicationContext();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        if (!taskInfo.isEmpty()) {
+            ComponentName topActivity = taskInfo.get(0).topActivity;
+            if (!topActivity.getPackageName().equals(context.getPackageName())) {
+                music.stop();
+            }
+            else {
+                music.start();
+            }
+        }
         super.onPause();
         senSensorManager.unregisterListener(this);
     }
@@ -115,10 +152,22 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    class MusicAsync extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            music = MediaPlayer.create(EightBall.this, R.raw.music);
+            music.setLooping(true);
+            music.setVolume(1.0f,1.0f);
+            music.start();
+            return null;
+        }
+    }
     class ShowPrediction extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
+
             return null;
         }
 
@@ -129,7 +178,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             Log.v(post, "After doInBackground");
 
             int random = rand.nextInt(messages.size());
-
             message.setText(messages.get(random));
             speak(messages.get(random));
         }
@@ -148,7 +196,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         messages.add("Signs point to yes");
         messages.add("Reply hazy try again");
         messages.add("Ask again later");
-        messages.add("Better not tell you now");
+        messages.add("Better to not tell you");
         messages.add("Cannot predict now");
         messages.add("Concentrate and ask again");
         messages.add("Don't count on it");

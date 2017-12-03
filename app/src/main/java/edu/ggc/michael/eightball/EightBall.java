@@ -1,17 +1,20 @@
 package edu.ggc.michael.eightball;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.hardware.SensorEventListener;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -37,11 +40,21 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         rand = new Random();
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setTTS();
+
         setMessages();
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.aboutBTN);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EightBall.this, about.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

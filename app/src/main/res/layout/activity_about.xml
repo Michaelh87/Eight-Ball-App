@@ -61,6 +61,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date"
-        app:srcCompat="@drawable/starship" />
+        app:srcCompat="@drawable/utah" />
 
 </android.support.constraint.ConstraintLayout>

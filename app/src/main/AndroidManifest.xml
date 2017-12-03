@@ -13,11 +13,6 @@
         android:roundIcon="@mipmap/eightball_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".BackgroundMusic"
-            android:enabled="true"
-            android:stopWithTask="true"
-            />
 
 
         <activity android:name=".EightBall">

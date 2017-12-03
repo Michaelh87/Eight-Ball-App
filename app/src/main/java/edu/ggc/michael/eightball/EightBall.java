@@ -39,6 +39,8 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private Intent svc;
     public static MediaPlayer music;
     private MusicAsync musicAsync;
+    int length = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +125,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     // This whole method basically checks whether the app was paused and pauses the music so it
     // doesnt keep playing the music even when the app closes.
     protected void onPause() {
-
         if (this.isFinishing()){
             music.stop();
         }
@@ -134,20 +135,27 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             ComponentName topActivity = taskInfo.get(0).topActivity;
             if (!topActivity.getPackageName().equals(context.getPackageName())) {
                 music.stop();
+                length = music.getCurrentPosition();
+
             }
-            else {
-                music.start();
-            }
+
         }
         super.onPause();
         senSensorManager.unregisterListener(this);
     }
 
     protected void onResume() {
-        super.onResume();
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
 
+        super.onResume();
+        if(music != null && !music.isPlaying()) {
+            music.seekTo(length);
+            music.start();
+        }
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Log.v("tag","music should start here.");
+
+
+    }
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 
         @Override

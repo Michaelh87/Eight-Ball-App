@@ -51,6 +51,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.v("fab", "in the on click for the fab");
                 Intent intent = new Intent(EightBall.this, about.class);
                 startActivity(intent);
             }
@@ -73,7 +74,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             if(v.hasVibrator() && !flipped ) {
                 v.vibrate(100);
             } else {
-
+                //for flash of camera is there is time
             }
             flipped = true;
         }
@@ -153,7 +154,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     }
 
     private void speak(String sp){
-        //see pixabay
         tts.speak(sp, TextToSpeech.QUEUE_FLUSH, null);
     }
 

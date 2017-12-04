@@ -39,7 +39,8 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private Intent svc;
     public static MediaPlayer music;
     private MusicAsync musicAsync;
-    int length = 0;
+    private int length;
+    private String musicTxt = "Music";
 
 
     @Override
@@ -82,9 +83,10 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        int pos = savedInstanceState.getInt("position");
+        length = savedInstanceState.getInt("position");
         Log.v("Orientation", ""+ savedInstanceState.getString("messageText"));
-        music.seekTo(pos);
+        Log.v(musicTxt, ""+length);
+        music.seekTo(length);
         message.setText(savedInstanceState.getString("messageText"));
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -125,8 +127,11 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     // This whole method basically checks whether the app was paused and pauses the music so it
     // doesnt keep playing the music even when the app closes.
     protected void onPause() {
+        super.onPause();
+        Log.v(musicTxt, "onPause");
         if (this.isFinishing()){
             music.stop();
+            Log.v(musicTxt, "isFinishing");
         }
         Context context = getApplicationContext();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -136,20 +141,23 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             if (!topActivity.getPackageName().equals(context.getPackageName())) {
                 music.stop();
                 length = music.getCurrentPosition();
-
+                Log.v(musicTxt, "in the if");
             }
 
         }
-        super.onPause();
         senSensorManager.unregisterListener(this);
     }
 
     protected void onResume() {
-
-
+        Log.v(musicTxt, "onResume");
         if(music != null && !music.isPlaying()) {
             music.seekTo(length);
-            music.start();
+            //music.start();
+            Log.v(musicTxt, "Should be playing " + length);
+        } else if (music == null){
+            musicAsync = new MusicAsync();
+            musicAsync.doInBackground();
+            Log.v(musicTxt, "music is null recreating");
         }
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.v("tag","music should start here.");
@@ -159,19 +167,25 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
     protected void onStop(){
         super.onStop();
+        Log.v(musicTxt, "onStop");
         music.stop();
         senSensorManager.unregisterListener(this);
     }
 
     protected void onRestart(){
         super.onRestart();
-        music.start();
+        Log.v(musicTxt, "onRestart doing nothing");
+//        if(music != null && !music.isPlaying()) {
+//            music.seekTo(length);
+//            music.start();
+//        }
     }
 
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Log.v(musicTxt, "In Async background");
             music = MediaPlayer.create(EightBall.this, R.raw.music);
             music.setLooping(true);
             music.setVolume(1.0f,1.0f);
@@ -232,7 +246,10 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     }
 
     private void speak(String sp){
+        length = music.getCurrentPosition();
+        music.stop();
         tts.speak(sp, TextToSpeech.QUEUE_FLUSH, null);
+        music.seekTo(length);
     }
 
 

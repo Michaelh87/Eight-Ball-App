@@ -1,7 +1,5 @@
 package edu.ggc.michael.eightball;
 
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -19,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -34,7 +31,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     private Random rand;
     private Vibrator v;
     private TextToSpeech tts;
-    private Intent svc;
     public static MediaPlayer music;
     private MusicAsync musicAsync;
     private int length;

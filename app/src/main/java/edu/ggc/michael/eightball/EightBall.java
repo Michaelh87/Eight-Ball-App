@@ -115,8 +115,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
         if(flipped == true && event.values[2] > 0){
             flipped = false;
-            ShowPrediction task = new ShowPrediction();
-            task.execute();
+            showPrediction();
         }
     }
 
@@ -147,7 +146,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         }
         senSensorManager.unregisterListener(this);
     }
-    
+
     protected void onStop(){
         super.onStop();
         Log.v(musicTxt, "onStop");
@@ -171,15 +170,6 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
         super.onResume();
     }
-//
-//    protected void onRestart(){
-//        super.onRestart();
-//        Log.v(musicTxt, "onRestart doing nothing");
-////        if(music != null && !music.isPlaying()) {
-////            music.seekTo(length);
-////            music.start();
-////        }
-//    }
 
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 
@@ -193,24 +183,35 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             return null;
         }
     }
-    class ShowPrediction extends AsyncTask<Void, Void, Void>{
+
+    class SpeakAsyncTask extends AsyncTask<String, String, Void>{
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(String... messageTTS) {
 
+            length = music.getCurrentPosition();
+            music.pause();
+            tts.speak(messageTTS[0], TextToSpeech.QUEUE_FLUSH, null);
+            while(tts.isSpeaking()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            music.start();
             return null;
         }
+    }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            String post = "PostExe";
-            Log.v(post, "After doInBackground");
+    private void showPrediction(){
+        String post = "PostExe";
+        Log.v(post, "After doInBackground");
 
-            int random = rand.nextInt(messages.size());
-            message.setText(messages.get(random));
-            speak(messages.get(random));
-        }
+        int random = rand.nextInt(messages.size());
+        message.setText(messages.get(random));
+        SpeakAsyncTask speakTask = new SpeakAsyncTask();
+        speakTask.execute(messages.get(random));
     }
 
     private void setMessages(){
@@ -244,14 +245,5 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             }
         });
     }
-
-    private void speak(String sp){
-        length = music.getCurrentPosition();
-        music.pause();
-        tts.speak(sp, TextToSpeech.QUEUE_FLUSH, null);
-        music.seekTo(length);
-        music.start();
-    }
-
 
 }

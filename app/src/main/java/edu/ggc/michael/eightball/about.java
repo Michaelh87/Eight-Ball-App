@@ -33,23 +33,5 @@ public class about extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
     }
-    protected void onPause() {
 
-        if (this.isFinishing()){
-            EightBall.music.stop();
-        }
-        Context context = getApplicationContext();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        if (!taskInfo.isEmpty()) {
-            ComponentName topActivity = taskInfo.get(0).topActivity;
-            if (!topActivity.getPackageName().equals(context.getPackageName())) {
-                EightBall.music.stop();
-            }else{
-                EightBall.music.start();
-            }
-
-        }
-        super.onPause();
-    }
 }

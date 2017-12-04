@@ -18,8 +18,6 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +64,8 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
             @Override
             public void onClick(View view) {
                 Log.v("fab", "in the on click for the fab");
+                music.release();
+                music = null;
                 Intent intent = new Intent(EightBall.this, about.class);
                 startActivity(intent);
             }
@@ -76,14 +76,18 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         Log.v("Orientation", ""+  message.getText());
-        outState.putInt("position", music.getCurrentPosition());
+        if(music != null) {
+            outState.putInt("position", music.getCurrentPosition());
+        }
         outState.putString("messageText", (String) message.getText());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        length = savedInstanceState.getInt("position");
+        if(music != null) {
+            length = savedInstanceState.getInt("position");
+        }
         Log.v("Orientation", ""+ savedInstanceState.getString("messageText"));
         Log.v(musicTxt, ""+length);
         music.seekTo(length);
@@ -127,35 +131,15 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     // doesnt keep playing the music even when the app closes.
     protected void onPause() {
         super.onPause();
-        Log.v(musicTxt, "onPause");
-        if (this.isFinishing()){
+        if(music != null) {
             music.pause();
-            Log.v(musicTxt, "isFinishing");
         }
-        Context context = getApplicationContext();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        if (!taskInfo.isEmpty()) {
-            ComponentName topActivity = taskInfo.get(0).topActivity;
-            if (!topActivity.getPackageName().equals(context.getPackageName())) {
-                music.pause();
-                length = music.getCurrentPosition();
-                Log.v(musicTxt, "in the if");
-            }
-
-        }
-        senSensorManager.unregisterListener(this);
-    }
-
-    protected void onStop(){
-        super.onStop();
-        Log.v(musicTxt, "onStop");
-        music.pause();
+        Log.v(musicTxt, "onPause");
         senSensorManager.unregisterListener(this);
     }
 
     protected void onResume() {
-        Log.v(musicTxt, "onResume");
+        Log.v(musicTxt, "onResume ");
         if(music != null && !music.isPlaying()) {
             music.seekTo(length);
             music.start();

@@ -156,6 +156,18 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
         super.onResume();
     }
+
+    protected void onStop(){
+        super.onStop();
+        music.stop();
+        senSensorManager.unregisterListener(this);
+    }
+
+    protected void onRestart(){
+        super.onRestart();
+        music.start();
+    }
+
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 
         @Override

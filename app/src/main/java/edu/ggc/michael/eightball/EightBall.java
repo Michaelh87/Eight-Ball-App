@@ -130,7 +130,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         super.onPause();
         Log.v(musicTxt, "onPause");
         if (this.isFinishing()){
-            music.stop();
+            music.pause();
             Log.v(musicTxt, "isFinishing");
         }
         Context context = getApplicationContext();
@@ -139,7 +139,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         if (!taskInfo.isEmpty()) {
             ComponentName topActivity = taskInfo.get(0).topActivity;
             if (!topActivity.getPackageName().equals(context.getPackageName())) {
-                music.stop();
+                music.pause();
                 length = music.getCurrentPosition();
                 Log.v(musicTxt, "in the if");
             }
@@ -152,7 +152,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         Log.v(musicTxt, "onResume");
         if(music != null && !music.isPlaying()) {
             music.seekTo(length);
-            //music.start();
+            music.start();
             Log.v(musicTxt, "Should be playing " + length);
         } else if (music == null){
             musicAsync = new MusicAsync();
@@ -168,7 +168,7 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
     protected void onStop(){
         super.onStop();
         Log.v(musicTxt, "onStop");
-        music.stop();
+        music.pause();
         senSensorManager.unregisterListener(this);
     }
 
@@ -247,9 +247,10 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
     private void speak(String sp){
         length = music.getCurrentPosition();
-        music.stop();
+        music.pause();
         tts.speak(sp, TextToSpeech.QUEUE_FLUSH, null);
         music.seekTo(length);
+        music.start();
     }
 
 

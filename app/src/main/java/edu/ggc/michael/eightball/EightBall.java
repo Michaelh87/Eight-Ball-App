@@ -147,6 +147,13 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
         }
         senSensorManager.unregisterListener(this);
     }
+    
+    protected void onStop(){
+        super.onStop();
+        Log.v(musicTxt, "onStop");
+        music.pause();
+        senSensorManager.unregisterListener(this);
+    }
 
     protected void onResume() {
         Log.v(musicTxt, "onResume");
@@ -164,22 +171,15 @@ public class EightBall extends AppCompatActivity implements SensorEventListener 
 
         super.onResume();
     }
-
-    protected void onStop(){
-        super.onStop();
-        Log.v(musicTxt, "onStop");
-        music.pause();
-        senSensorManager.unregisterListener(this);
-    }
-
-    protected void onRestart(){
-        super.onRestart();
-        Log.v(musicTxt, "onRestart doing nothing");
-//        if(music != null && !music.isPlaying()) {
-//            music.seekTo(length);
-//            music.start();
-//        }
-    }
+//
+//    protected void onRestart(){
+//        super.onRestart();
+//        Log.v(musicTxt, "onRestart doing nothing");
+////        if(music != null && !music.isPlaying()) {
+////            music.seekTo(length);
+////            music.start();
+////        }
+//    }
 
     class MusicAsync extends AsyncTask<Void, Void, Void>{
 

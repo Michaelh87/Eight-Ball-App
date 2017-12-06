@@ -21,7 +21,7 @@ public class about extends AppCompatActivity {
     }
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
-        outState.putInt("position", EightBall.music.getCurrentPosition());
+        //outState.putInt("position", EightBall.music.getCurrentPosition());
         super.onSaveInstanceState(outState);
     }
 
@@ -29,7 +29,7 @@ public class about extends AppCompatActivity {
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         int pos = savedInstanceState.getInt("position");
         Log.v("Orientation", ""+ savedInstanceState.getString("messageText"));
-        EightBall.music.seekTo(pos);
+       // EightBall.music.seekTo(pos);
         super.onRestoreInstanceState(savedInstanceState);
 
     }
